@@ -1,0 +1,29 @@
+http:
+    routers:
+      station:
+        rule: "Host(`s.demo.com`)"
+        service: "station"
+        middlewares:
+          - "google-auth"
+        entryPoints:
+          - "https"
+        tls:
+            certResolver: "default"
+      station-jupyter:
+        rule: "Host(`sj.demo.com`)"
+        service: "station-jupyter"
+        middlewares:
+          - "google-auth"
+        entryPoints:
+          - "https"
+        tls:
+            certResolver: "default"
+    services:
+      station:
+        loadBalancer:
+          servers:
+            - url: "http://station:8080"
+      station-jupyter:
+        loadBalancer:
+          servers:
+            - url: "http://station:8888"

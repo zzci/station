@@ -1,0 +1,6 @@
+#!/bin/sh
+
+code-server --user-data-dir /work/vscode/data \
+            --extensions-dir /work/vscode/ext \
+            --config /work/vscode/config.yml \
+            --auth none --bind-addr 0.0.0.0:8080

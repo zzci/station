@@ -1,0 +1,17 @@
+function dex-fn {
+    docker exec -it "$@"
+}
+function dsr-fn {
+    docker rm -f "$@"
+}
+function cw-fn {
+    cd /app/$1
+}
+alias de=dex-fn
+alias ds="docker ps -a"
+alias dl="docker images"
+alias dr=dsr-fn
+alias dri="docker rmi "
+alias aa="./aa "
+alias cw=cw-fn
+alias dc="docker images -qf dangling=true | xargs docker rmi"

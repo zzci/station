@@ -1,0 +1,10 @@
+c.NotebookApp.allow_password_change = True
+c.NotebookApp.allow_remote_access = True
+c.NotebookApp.allow_root = True
+c.NotebookApp.custom_display_url = 'http://localhost:8888'
+c.NotebookApp.ip = '0.0.0.0'
+c.NotebookApp.open_browser = False
+c.NotebookApp.terminado_settings = {'shell_command': ['/bin/zsh']}
+c.NotebookApp.token = ''
+c.ContentsManager.allow_hidden = True
+c.ContentsManager.root_dir = '/'

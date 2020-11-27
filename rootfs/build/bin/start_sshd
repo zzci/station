@@ -1,0 +1,57 @@
+#!/bin/sh
+
+sshd_config="/work/config/sshd"
+ssh_config="/work/config/ssh"
+
+init_ssh() {
+    echo "init ssh configure"
+    mkdir -p /run/sshd
+    mkdir -p $sshd_config
+    if [ ! -f $sshd_config/ssh_host_dsa_key ]; then
+        echo "init ssh host dsa key"
+        ssh-keygen -q -N "" -t dsa -f $sshd_config/ssh_host_dsa_key
+    fi
+
+    if [ ! -f $sshd_config/ssh_host_rsa_key ]; then
+        echo "init ssh host rsa key"
+        ssh-keygen -q -N "" -t dsa -f $sshd_config/ssh_host_rsa_key
+    fi
+
+    if [ ! -f $sshd_config/ssh_host_ecdsa_key ]; then
+        echo "init ssh host ecdsa key"
+        ssh-keygen -q -N "" -t ecdsa -f $sshd_config/ssh_host_ecdsa_key
+    fi
+
+    if [ ! -f $sshd_config/ssh_host_ed25519_key ]; then
+        echo "init ssh host ed25519 key"
+        ssh-keygen -q -N "" -t dsa -f $sshd_config/ssh_host_ed25519_key
+    fi
+
+    rm -rf /etc/ssh/ssh_host_*
+    ln -s $sshd_config/ssh_host_dsa_key.pub /etc/ssh/ssh_host_dsa_key.pub
+    ln -s $sshd_config/ssh_host_dsa_key.pub /etc/ssh/ssh_host_rsa_key.pub
+    ln -s $sshd_config/ssh_host_ecdsa_key.pub /etc/ssh/ssh_host_ecdsa_key.pub
+    ln -s $sshd_config/ssh_host_ed25519_key.pub /etc/ssh/ssh_host_ed25519_key.pub
+    ln -s $sshd_config/ssh_host_dsa_key /etc/ssh/ssh_host_dsa_key
+    ln -s $sshd_config/ssh_host_dsa_key /etc/ssh/ssh_host_rsa_key
+    ln -s $sshd_config/ssh_host_ecdsa_key /etc/ssh/ssh_host_ecdsa_key
+    ln -s $sshd_config/ssh_host_ed25519_key /etc/ssh/ssh_host_ed25519_key
+
+    echo root:$(echo `cat /dev/urandom | base64 | head -c 16`) | chpasswd
+    if [ -f $sshd_config/sshd_config ]; then
+        mv /etc/ssh/sshd_config /etc/ssh/sshd_config.bk
+        ln -s $sshd_config/sshd_config /etc/ssh/sshd_config
+    fi
+}
+
+init_ssh
+
+if [ ! -d "/root/.ssh" ] || [ "`ls -A /root/.ssh`" = "" ]; then
+    rm -rf /root/.ssh
+    echo "init ssh auth configure"
+    mkdir -p $ssh_config
+    ln -s $ssh_config /root/.ssh
+fi
+
+exec /usr/sbin/sshd -D
+
