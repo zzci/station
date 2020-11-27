@@ -14,4 +14,4 @@ steps:
       from_secret: docker_password
   when:
     target:
-    - build
+    - push
