@@ -1,5 +1,7 @@
 #!/bin/sh
 
+mkdir -p /work/vscode/data /work/vscode/ext
+
 exec code-server --user-data-dir /work/vscode/data \
             --extensions-dir /work/vscode/ext \
             --config /work/vscode/config.yml \
