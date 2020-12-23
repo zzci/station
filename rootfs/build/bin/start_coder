@@ -3,4 +3,4 @@
 code-server --user-data-dir /work/vscode/data \
             --extensions-dir /work/vscode/ext \
             --config /work/vscode/config.yml \
-            --auth none --bind-addr 0.0.0.0:8080
+            --auth none --disable-update-check  --bind-addr 0.0.0.0:8080
