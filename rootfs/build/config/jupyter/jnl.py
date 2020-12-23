@@ -8,3 +8,5 @@ c.NotebookApp.terminado_settings = {'shell_command': ['/bin/zsh']}
 c.NotebookApp.token = ''
 c.ContentsManager.allow_hidden = True
 c.ContentsManager.root_dir = '/'
+c.LabApp.user_settings_dir = '/work/jupyter/lab/user-settings'
+c.LabApp.workspaces_dir = '/work/jupyter/lab/workspaces'
