@@ -8,4 +8,5 @@ if [ ! -d "$config" ] || [! -f "$config/jnl.py" ]; then
     cp -a /build/config/$name/jnl.py $config
 fi
 
+mkdir -p $config/lab/user-settings $config/lab/workspaces
 exec /usr/local/bin/jupyter-lab --config $config/jnl.py
