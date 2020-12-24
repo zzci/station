@@ -8,7 +8,7 @@ on:
         required: true
         default: 'push to docker hub'
 env:
-  IMAGE_NAME: station-go
+  IMAGE_NAME: station
 
 jobs:
   push:
