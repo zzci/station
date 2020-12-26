@@ -14,7 +14,7 @@ init_ssh() {
 
     if [ ! -f $sshd_config/ssh_host_rsa_key ]; then
         echo "init ssh host rsa key"
-        ssh-keygen -q -N "" -t dsa -f $sshd_config/ssh_host_rsa_key
+        ssh-keygen -q -N "" -t rsa -f $sshd_config/ssh_host_rsa_key
     fi
 
     if [ ! -f $sshd_config/ssh_host_ecdsa_key ]; then
@@ -24,7 +24,7 @@ init_ssh() {
 
     if [ ! -f $sshd_config/ssh_host_ed25519_key ]; then
         echo "init ssh host ed25519 key"
-        ssh-keygen -q -N "" -t dsa -f $sshd_config/ssh_host_ed25519_key
+        ssh-keygen -q -N "" -t ed25519 -f $sshd_config/ssh_host_ed25519_key
     fi
 
     rm -rf /etc/ssh/ssh_host_*
