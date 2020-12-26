@@ -26,8 +26,6 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - && \
     pip3 install wheel && pip3 install numpy && pip3 install jupyterlab && \
     apt-get autoclean -y && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
-ENV PATH=$PATH:/build/bin
-
 EXPOSE 8080 8888 22
 
 ADD rootfs /
