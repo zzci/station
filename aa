@@ -15,7 +15,7 @@ done
 }
 
 [ "$1" = "rm" ] && {
-    docker rm -f $NAME
+    docker-compose down
 }
 
 [ "$1" = "e" ] && {
@@ -26,16 +26,8 @@ done
 }
 
 [ "$1" = "run" ] && {
-    docker rm -f $NAME
-    docker run -d  --network proxy -v /var/run/docker.sock:/var/run/docker.sock \
-               -v $PWD/work:/work -v /project:/data  --hostname $NAME --name  $NAME  $NAME
-    if [ "$2" != "" ]; then
-        docker exec -ti $NAME $2
-    fi
-}
-
-[ "$1" = "pack" ] && {
-    docker save $NAME | gzip > $NAME.gz
+    docker-compose down
+    docker-compose up -d
 }
 
 exit 0
