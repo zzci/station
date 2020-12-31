@@ -7,11 +7,20 @@ function dsr-fn {
 function cw-fn {
     cd /app/$1
 }
+## docker
 alias de=dex-fn
-alias ds="docker ps -a"
+
+alias ds="docker ps"
+alias dse="docker ps -af status=exited"
+
 alias dl="docker images"
+
 alias dr=dsr-fn
 alias dri="docker rmi "
+
+alias dci="docker images -qf dangling=true | xargs docker rmi"
+alias dc="docker-compose "
+
+## tools
 alias aa="./aa "
 alias cw=cw-fn
-alias dc="docker images -qf dangling=true | xargs docker rmi"
