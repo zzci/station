@@ -8,16 +8,17 @@ COPY --from=docker-static /usr/local/bin/docker /usr/bin/docker
 
 ## vscode onlin, rclone, on my zsh
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
-    ### vscode online 
+    ### docker compose online 
     curl -L "https://github.com/docker/compose/releases/download/1.28.4/docker-compose-$(uname -s)-$(uname -m)" \
     -o /usr/bin/docker-compose && \
     chmod +x /usr/bin/docker-compose && mkdir -p /build/app/vscode && \
+    ### vscode online 
     wget -qO- https://github.com/cdr/code-server/releases/download/v3.9.0/code-server-3.9.0-linux-amd64.tar.gz | \
-    tar xz --strip 1 -C /build/app/vscode && \
-    ln -s /build/app/vscode/bin/code-server /build/bin/ && \
+    tar xz --strip 1 -C /opt/vscode && \
+    ln -s /opt/vscode/bin/code-server /build/bin/ && \
     ### rclone
     wget -qO "/tmp/rclone.deb" https://github.com/rclone/rclone/releases/download/v1.53.2/rclone-v1.53.2-linux-amd64.deb && \
-    dpkg -i /tmp/rclone.deb
+    dpkg -i /tmp/rclone.deb && rm -rf /tmp/*
 
 ## jupyterlab
 RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
