@@ -2,7 +2,7 @@
 name="jupyter"
 config="/work/config/$name"
 
-if [ ! -d "$config" ] || [! -f "$config/jnl.py" ]; then
+if [ ! -d "$config" ] || [ ! -f "$config/jnl.py" ]; then
     echo "init $name configure"
     mkdir -p $config
     cp -a /build/config/$name/jnl.py $config
