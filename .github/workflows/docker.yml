@@ -3,7 +3,7 @@ name: docker-build-push
 on:
   workflow_dispatch:
   schedule:
-    - cron:  '0 4 * * 0'
+    - cron:  '0 4 * * 1'
 env:
   IMAGE_NAME: zzci/station
 
