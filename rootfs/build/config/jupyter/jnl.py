@@ -1,12 +1,12 @@
-c.NotebookApp.allow_password_change = True
-c.NotebookApp.allow_remote_access = True
-c.NotebookApp.allow_root = True
-c.NotebookApp.custom_display_url = 'http://localhost:8888'
-c.NotebookApp.ip = '0.0.0.0'
-c.NotebookApp.open_browser = False
-c.NotebookApp.terminado_settings = {'shell_command': ['/bin/zsh']}
-c.NotebookApp.token = ''
+c.ExtensionApp.open_browser = False
+c.ServerApp.allow_remote_access = True
+c.ServerApp.allow_root = True
+c.ServerApp.token = ''
+c.ServerApp.ip = '0.0.0.0'
+c.ServerApp.port = 8888
+c.ServerApp.terminado_settings = {'shell_command': ['/bin/zsh']}
 c.ContentsManager.allow_hidden = True
 c.ContentsManager.root_dir = '/work'
 c.LabApp.user_settings_dir = '/work/config/jupyter/lab/user-settings'
 c.LabApp.workspaces_dir = '/work/config/jupyter/lab/workspaces'
+
