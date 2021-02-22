@@ -13,7 +13,7 @@ echo 'PATH=$PATH:/work/bin:/build/bin' >> ~/.bashrc
 usermod --shell /bin/zsh root
 
 ## fix github action file permissions
-chmod -R a-w /build /root
-chmod -R a-x /build/config /build/services
+chmod -R 0755 /build /root
+chmod -R 0644 /build/config /build/services /root/.alias
 
 cd $_p_w_d && rm -f $0
