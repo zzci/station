@@ -38,10 +38,13 @@ init_ssh() {
     ln -s $sshd_config/ssh_host_ed25519_key /etc/ssh/ssh_host_ed25519_key
 
     echo root:$(echo `cat /dev/urandom | base64 | head -c 16`) | chpasswd
-    if [ -f $sshd_config/sshd_config ]; then
-        mv /etc/ssh/sshd_config /etc/ssh/sshd_config.bk
-        ln -s $sshd_config/sshd_config /etc/ssh/sshd_config
+
+    if [ ! -f $sshd_config/sshd_config ]; then
+        cp -a /build/config/sshd/sshd_config $sshd_config
     fi
+
+    rm /etc/ssh/sshd_config
+    ln -s $sshd_config/sshd_config /etc/ssh/sshd_config
 }
 
 init_ssh
@@ -53,5 +56,5 @@ if [ ! -d "/root/.ssh" ] || [ "`ls -A /root/.ssh`" = "" ]; then
     ln -s $ssh_config /root/.ssh
 fi
 
-exec /usr/sbin/sshd -D
+exec /usr/sbin/sshd -D -E /var/log/sshd.log
 
