@@ -22,11 +22,10 @@ RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/inst
     #
     ## rclone
     wget -qO "/tmp/rclone.deb" https://github.com/rclone/rclone/releases/download/v1.53.2/rclone-v1.53.2-linux-amd64.deb && \
-    dpkg -i /tmp/rclone.deb && rm -rf /tmp/*
-
-## jupyterlab
-RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
-    python3-pip python3-setuptools && \
+    dpkg -i /tmp/rclone.deb && rm -rf /tmp/*; \
+    ## jupyterlab
+    apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
+    python3-pip python3-setuptools php && \
     pip3 install wheel numpy jupyterlab && \
     apt-get autoclean -y && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
 
