@@ -4,7 +4,7 @@ FROM zzci/ubase
 
 WORKDIR /app
 
-COPY --from=docker-static /usr/local/bin/docker /usr/bin/docker
+COPY --from=docker /usr/local/bin/docker /usr/bin/docker
 
 ## vscode onlin, rclone, on my zsh
 RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
@@ -16,17 +16,17 @@ RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/inst
     #
     ## vscode online 
     mkdir -p /opt/vscode && \
-    wget -qO- https://github.com/cdr/code-server/releases/download/v3.9.1/code-server-3.9.1-linux-amd64.tar.gz | \
+    wget -qO- https://github.com/cdr/code-server/releases/download/v3.10.2/code-server-3.10.2-linux-amd64.tar.gz | \
     tar xz --strip 1 -C /opt/vscode && \
     ln -s /opt/vscode/bin/code-server /build/bin/ && \
     #
     ## rclone
-    wget -qO "/tmp/rclone.deb" https://github.com/rclone/rclone/releases/download/v1.53.2/rclone-v1.53.2-linux-amd64.deb && \
+    wget -qO "/tmp/rclone.deb" https://github.com/rclone/rclone/releases/download/v1.53.2/rclone-v1.53.2-linux-amd64.deb; \
     dpkg -i /tmp/rclone.deb && rm -rf /tmp/*; \
     ## jupyterlab
     apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
-    python3-pip python3-setuptools php && \
-    pip3 install wheel numpy jupyterlab && \
+    python3-pip python3-setuptools php dnsutils sqlite3; \
+    pip3 install wheel numpy jupyterlab; \
     apt-get autoclean -y && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/*
 
 EXPOSE 8080 8888 22
