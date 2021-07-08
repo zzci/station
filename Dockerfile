@@ -7,8 +7,7 @@ WORKDIR /app
 COPY --from=docker /usr/local/bin/docker /usr/bin/docker
 
 
-RUN # Tools
-    apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
+RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
     php dnsutils sqlite3; \
     # on my zsh
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
