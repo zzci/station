@@ -19,7 +19,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     #
     ## vscode online 
     mkdir -p /opt/vscode && \
-    wget -qO- https://github.com/cdr/code-server/releases/download/v3.10.2/code-server-3.10.2-linux-amd64.tar.gz | \
+    wget -qO- https://github.com/cdr/code-server/releases/download/v3.11.1/code-server-3.11.1-linux-amd64.tar.gz | \
     tar xz --strip 1 -C /opt/vscode && \
     ln -s /opt/vscode/bin/code-server /build/bin/ && \
     #
