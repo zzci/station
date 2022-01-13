@@ -18,10 +18,8 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     chmod +x /usr/bin/docker-compose && \
     #
     ## vscode online 
-    mkdir -p /opt/vscode && \
-    wget -qO- https://github.com/cdr/code-server/releases/download/v3.11.1/code-server-3.11.1-linux-amd64.tar.gz | \
-    tar xz --strip 1 -C /opt/vscode && \
-    ln -s /opt/vscode/bin/code-server /build/bin/ && \
+    wget -qO "/tmp/vscode.deb" https://github.com/coder/code-server/releases/download/v4.0.1/code-server_4.0.1_amd64.deb; \
+    dpkg -i /tmp/vscode.deb; \
     #
     ## rclone
     wget -qO "/tmp/rclone.deb" https://github.com/rclone/rclone/releases/download/v1.55.1/rclone-v1.55.1-linux-amd64.deb; \
