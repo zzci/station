@@ -14,6 +14,10 @@ done
     docker build --rm -t $NAME . 
 }
 
+[ "$1" = "test" ] && {
+    docker run --rm -ti $NAME $EXEC
+}
+
 [ "$1" = "rm" ] && {
     docker-compose down
 }
