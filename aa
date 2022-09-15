@@ -1,5 +1,5 @@
 #!/bin/sh
-NAME="station"
+NAME="station-test"
 EXEC="zsh"
 
 ## check docker running.

@@ -24,6 +24,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     ## jupyterlab
     env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
     python3-pip python3-setuptools; \
+    pip3 install https://zzci.cc/static/station/pyzmq-24.0.0-cp38-cp38-linux_x86_64.whl; \
     pip3 install wheel numpy jupyterlab; \
     ## clear
     apt-get autoclean -y; apt-get autoremove -y; rm -rf /var/lib/apt/lists/*; rm -rf /tmp/*
