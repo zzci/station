@@ -5,6 +5,7 @@ _p_w_d=$(pwd)
 
 sed -i '1,/robbyrussell/{s/robbyrussell/afowler/}' ~/.zshrc
 echo 'source ~/.alias' >> ~/.zshrc
+echo "zstyle ':omz:update' mode disabled" >> ~/.zshrc
 
 echo 'PATH=$PATH:/work/bin:/build/bin' >> ~/.zshrc
 echo 'PATH=$PATH:/work/bin:/build/bin' >> ~/.bashrc
