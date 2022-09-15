@@ -1,8 +1,6 @@
 #!/bin/sh
 _p_w_d=$(pwd)
 
-echo 'set mouse=' >> ~/.vimrc
-
 > /etc/motd
 
 sed -i '1,/robbyrussell/{s/robbyrussell/afowler/}' ~/.zshrc
