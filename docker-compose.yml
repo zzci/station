@@ -2,10 +2,9 @@ version: '3'
 
 services:
   traefik:
-    image: zzci/station
-    container_name: station
-    hostname: 'cn-station'
-
+    image: station-test
+    container_name: station-test
+    hostname: 'station'
     ports:
       - "2222:22"
       - "8080:8080"

@@ -27,7 +27,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     pip3 install https://zzci.cc/static/station/pyzmq-24.0.0-cp38-cp38-linux_x86_64.whl; \
     pip3 install wheel numpy jupyterlab; \
     ## clear
-    apt-get autoclean -y; apt-get autoremove -y; rm -rf /var/lib/apt/lists/*; rm -rf /tmp/*
+    apt-get autoclean -y; apt-get autoremove -y; rm -rf /var/lib/apt/lists/*; rm -rf /tmp/*; rm -rf /root/.cache
 
 EXPOSE 8080 8888 22
 
