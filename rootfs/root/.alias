@@ -1,3 +1,24 @@
+#!/bin/sh
+
+## path
+case ":${PATH}:" in
+    *:"/build/bin":*)
+        ;;
+    *)
+        # Prepending path in case a system-installed rustc needs to be overridden
+        export PATH="/build/bin:$PATH"
+        ;;
+esac
+
+case ":${PATH}:" in
+    *:"/work/bin":*)
+        ;;
+    *)
+        # Prepending path in case a system-installed rustc needs to be overridden
+        export PATH="/work/bin:$PATH"
+        ;;
+esac
+
 function dex-fn {
     docker exec -it "$@"
 }
