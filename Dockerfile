@@ -21,10 +21,15 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     ## rclone
     wget -qO "/tmp/rclone.deb" https://github.com/rclone/rclone/releases/download/v1.59.0/rclone-v1.59.0-linux-amd64.deb; \
     dpkg -i /tmp/rclone.deb;\
+    #
     ## jupyterlab
     env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
     python3-pip python3-setuptools; \
-    pip3 install https://zzci.cc/static/station/pyzmq-24.0.0-cp38-cp38-linux_x86_64.whl; \
+    #
+    ## fix bugs for jupyterlab install
+    pip3 install https://static.zzci.cc/station/pyzmq-24.0.0-cp38-cp38-linux_x86_64.whl; \
+    #
+    ## jupyterlab install
     pip3 install wheel numpy jupyterlab; \
     ## clear
     apt-get autoclean -y; apt-get autoremove -y; rm -rf /var/lib/apt/lists/*; rm -rf /tmp/*; rm -rf /root/.cache
