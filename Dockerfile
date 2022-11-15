@@ -27,7 +27,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     python3-pip python3-setuptools; \
     #
     ## fix bugs for jupyterlab install
-    pip3 install https://static.zzci.cc/station/pyzmq-24.0.0-cp38-cp38-linux_x86_64.whl; \
+    pip3 install https://res.zzci.cc/station/pyzmq-24.0.0-cp38-cp38-linux_x86_64.whl; \
     #
     ## jupyterlab install
     pip3 install wheel numpy jupyterlab; \
