@@ -31,4 +31,5 @@ RUN \
     ## pack /root
     mkdir -p /build/res/; \
     rm -rf /build/res/root.tar.gz; \
-    tar -czf /build/res/root.tar.gz /root
+    tar -czf /build/res/root.tar.gz /root; \
+    rm -rf /root; mkdir -p /root

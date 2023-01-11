@@ -13,7 +13,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     #
     ## docker compose online
     mkdir -p /usr/lib/docker/cli-plugins; \
-    curl -L "https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-linux-x86_64" \
+    curl -L "https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-linux-x86_64" \
     -o /usr/bin/docker-compose; \
     chmod +x /usr/bin/docker-compose; \
     ln -s /usr/bin/docker-compose /usr/lib/docker/cli-plugins/; \
