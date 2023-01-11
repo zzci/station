@@ -37,7 +37,12 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     ## jupyterlab install
     pip3 install wheel numpy jupyterlab; \
     ## clear
-    apt-get autoclean -y; apt-get autoremove -y; rm -rf /var/lib/apt/lists/*; rm -rf /tmp/*; rm -rf /root/.cache
+    apt-get autoclean -y; apt-get autoremove -y; rm -rf /var/lib/apt/lists/*; rm -rf /tmp/*; rm -rf /root/.cache; \
+    ## pack /root
+    mkdir -p /build/res/; \
+    touch /root/.init_tag_do_not_delete; \
+    rm -rf /build/res/root.tar.gz; \
+    tar -czf /build/res/root.tar.gz /root
 
 EXPOSE 8080 8888 22
 

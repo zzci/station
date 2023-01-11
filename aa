@@ -11,7 +11,15 @@ do
 done
 
 [ "$1" = "" ] && {
-    docker build --rm -t $NAME . 
+    docker build --rm -t $NAME .
+}
+
+[ "$1" = "dev" ] && {
+    docker build --rm -t $NAME-dev  -f Dockerfile.dev .
+}
+
+[ "$1" = "test-dev" ] && {
+    docker run --rm -ti $NAME-dev $EXEC
 }
 
 [ "$1" = "test" ] && {

@@ -13,8 +13,8 @@ usermod --shell /bin/zsh root
 
 ## fix github action file permissions
 
-chmod -R 0755 /build /root
+chmod -R 0755 /build
 
-chmod -R 0644 /build/config /build/services /root/.alias
+chmod -R 0644 /build/config /build/services
 
 cd $_p_w_d && rm -f $0

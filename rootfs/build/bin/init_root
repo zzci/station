@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ ! -f "/root/.init_tag_do_not_delete" ]; then
+    echo "Init default root file"
+    mkdir -p /root
+    tar -zxvf /build/res/root.tar.gz -C /
+fi
