@@ -1,0 +1,12 @@
+#!/bin/sh
+
+mkdir -p /work/vscode
+
+exec /opt/code-server/start --server-data-dir /work/vscode \
+                            --disable-telemetry \
+                            --accept-server-license-terms \
+                            serve-local \
+                            --without-connection-token \
+                            --port 8080 \
+                            --host 0.0.0.0 \
+                            -- --server-data-dir /work/vscode

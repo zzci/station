@@ -9,7 +9,7 @@ case ":${PATH}:" in
         export PATH="/build/bin:$PATH"
         ;;
 esac
-
+export DISABLE_AUTO_UPDATE=true
 case ":${PATH}:" in
     *:"/work/bin":*)
         ;;

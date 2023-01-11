@@ -8,7 +8,8 @@ COPY --from=docker/buildx-bin /buildx /usr/lib/docker/cli-plugins/docker-buildx
 RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
     php-cli dnsutils sqlite3; \
     # on my zsh
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
+    echo "DISABLE_AUTO_UPDATE=true" >> /root/.zshrc; \
     #
     ## docker compose online
     mkdir -p /usr/lib/docker/cli-plugins; \
@@ -17,9 +18,10 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     chmod +x /usr/bin/docker-compose; \
     ln -s /usr/bin/docker-compose /usr/lib/docker/cli-plugins/; \
     #
-    ## vscode online 
-    wget -qO "/tmp/vscode.deb" https://github.com/coder/code-server/releases/download/v4.8.3/code-server_4.8.3_amd64.deb; \
-    dpkg -i /tmp/vscode.deb; \
+    ## vscode code server
+    wget -qO "/tmp/code-server" https://aka.ms/vscode-server-launcher/x86_64-unknown-linux-musl; \
+    chmod +x /tmp/code-server; mkdir -p /opt/code-server; \
+    cp /tmp/code-server -a /opt/code-server/start ; \
     #
     ## rclone
     wget -qO "/tmp/rclone.deb" https://github.com/rclone/rclone/releases/download/v1.60.0/rclone-v1.60.0-linux-amd64.deb; \
@@ -30,7 +32,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     python3-pip python3-setuptools; \
     #
     ## fix bugs for jupyterlab install
-    pip3 install https://res.zzci.cc/station/pyzmq-24.0.0-cp38-cp38-linux_x86_64.whl; \
+    #pip3 install https://res.zzci.cc/station/pyzmq-24.0.0-cp38-cp38-linux_x86_64.whl; \
     #
     ## jupyterlab install
     pip3 install wheel numpy jupyterlab; \

@@ -1,8 +1,0 @@
-#!/bin/sh
-
-mkdir -p /work/vscode/data /work/vscode/ext
-
-exec code-server --user-data-dir /work/vscode/data \
-            --extensions-dir /work/vscode/ext \
-            --config /work/vscode/config.yml \
-            --auth none --disable-update-check --disable-telemetry --bind-addr 0.0.0.0:8080
