@@ -5,17 +5,20 @@ DATA_DIR="/work/vscode"
 
 mkdir -p $DATA_DIR
 
-pids=`ps -ef | grep '[s]erver-stable-web' | awk '{print $2}'`
+PORT_NUMBER=${1:-8080}
+HOST=${2:-0.0.0.0}
 
-# Kill any existing code-server processes
-if [ -n "\$pids" ]; then
-    echo "Killing code-server processes: \$pids"
-    echo \$pids | xargs kill -9
+pids=$(ps aux | grep 'server-stable-web' | grep -v grep | awk '{print $2}')
+
+if [ -n "$pids" ]; then
+    echo "Killing code-server processes: $pids"
+    echo $pids | xargs kill -9
 else
     echo "No code-server processes found"
 fi
-
+export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+# Start code-server with necessary options
 exec "$CODE_SERVER_BIN" --server-data-dir "$DATA_DIR" \
   --disable-telemetry --accept-server-license-terms \
-  serve-local --port 8080 --host 0 -- \
-  --server-data-dir "$DATA_DIR" --without-connection-token
+  serve-local --port "$PORT_NUMBER" --host "$HOST" -- \
+  --server-data-dir "$DATA_DIR" --without-connection-token  --ignore-certificate-errors
