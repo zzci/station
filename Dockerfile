@@ -20,8 +20,8 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     #
     ## vscode code server
     wget -qO "/tmp/code-server" https://aka.ms/vscode-server-launcher/x86_64-unknown-linux-musl; \
-    chmod +x /tmp/code-server; mkdir -p /opt/code-server; \
-    cp /tmp/code-server -a /opt/code-server/start ; \
+    chmod +x /tmp/code-server; mkdir -p /opt/vscode/bin; \
+    cp /tmp/code-server -a /opt/vscode/bin/code-server; \
     #
     ## rclone
     wget -qO "/tmp/rclone.deb" https://github.com/rclone/rclone/releases/download/v1.60.0/rclone-v1.60.0-linux-amd64.deb; \
