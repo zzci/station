@@ -1,0 +1,21 @@
+#!/bin/sh
+
+CODE_SERVER_BIN="/opt/vscode/bin/code-server"
+DATA_DIR="/work/vscode"
+
+mkdir -p $DATA_DIR
+
+pids=`ps -ef | grep '[s]erver-stable-web' | awk '{print $2}'`
+
+# Kill any existing code-server processes
+if [ -n "\$pids" ]; then
+    echo "Killing code-server processes: \$pids"
+    echo \$pids | xargs kill -9
+else
+    echo "No code-server processes found"
+fi
+
+exec "$CODE_SERVER_BIN" --server-data-dir "$DATA_DIR" \
+  --disable-telemetry --accept-server-license-terms \
+  serve-local --port 8080 --host 0 -- \
+  --server-data-dir "$DATA_DIR" --without-connection-token

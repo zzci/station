@@ -13,7 +13,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     #
     ## docker compose online
     mkdir -p /usr/lib/docker/cli-plugins; \
-    curl -L "https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-linux-x86_64" \
+    curl -L "https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-x86_64" \
     -o /usr/bin/docker-compose; \
     chmod +x /usr/bin/docker-compose; \
     ln -s /usr/bin/docker-compose /usr/lib/docker/cli-plugins/; \
@@ -30,10 +30,6 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     ## jupyterlab
     env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
     python3-pip python3-setuptools; \
-    #
-    ## fix bugs for jupyterlab install
-    #pip3 install https://res.zzci.cc/station/pyzmq-24.0.0-cp38-cp38-linux_x86_64.whl; \
-    #
     ## jupyterlab install
     pip3 install wheel numpy jupyterlab; \
     ## clear
