@@ -1,7 +1,7 @@
 #!/bin/sh
 _p_w_d=$(pwd)
 
-> /etc/motd
+echo > /etc/motd
 
 sed -i '1,/robbyrussell/{s/robbyrussell/afowler/}' ~/.zshrc
 
