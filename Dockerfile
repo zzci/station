@@ -5,6 +5,8 @@ WORKDIR /app
 COPY --from=docker /usr/local/bin/docker /usr/bin/docker
 COPY --from=docker/buildx-bin /buildx /usr/lib/docker/cli-plugins/docker-buildx
 
+ADD rootfs /
+
 RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
     php-cli dnsutils sqlite3; \
     # on my zsh
@@ -36,14 +38,11 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     apt-get autoclean -y; apt-get autoremove -y; rm -rf /var/lib/apt/lists/*; rm -rf /tmp/*; rm -rf /root/.cache; \
     ## pack /root
     mkdir -p /build/res/; \
+    bash /tmp.sh; \
     touch /root/.init_tag_do_not_delete; \
     rm -rf /build/res/root.tar.gz; \
     tar -czf /build/res/root.tar.gz /root
 
 EXPOSE 8080 8888 22
-
-ADD rootfs /
-
-RUN sh /tmp.sh
 
 CMD ["/start.sh"]
