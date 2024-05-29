@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY --from=docker /usr/local/bin/docker /usr/bin/docker
 COPY --from=docker/buildx-bin /buildx /usr/lib/docker/cli-plugins/docker-buildx
+COPY --from=docker /usr/local/libexec/docker/cli-plugins/docker-compose /usr/lib/docker/cli-plugins/docker-compose
 
 ADD rootfs /
 
@@ -13,12 +14,8 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
     echo "DISABLE_AUTO_UPDATE=true" >> /root/.zshrc; \
     #
-    ## docker compose online
-    mkdir -p /usr/lib/docker/cli-plugins; \
-    curl -L "https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-linux-x86_64" \
-    -o /usr/bin/docker-compose; \
-    chmod +x /usr/bin/docker-compose; \
-    ln -s /usr/bin/docker-compose /usr/lib/docker/cli-plugins/; \
+    ## docker compose
+    ln -s /usr/lib/docker/cli-plugins/docker-compose /usr/bin/docker-compose; \
     #
     ## vscode code server
     wget -qO "/tmp/code-server" https://aka.ms/vscode-server-launcher/x86_64-unknown-linux-musl; \
@@ -26,8 +23,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     cp /tmp/code-server -a /opt/vscode/bin/code-server; \
     #
     ## rclone
-    wget -qO "/tmp/rclone.deb" https://github.com/rclone/rclone/releases/download/v1.60.0/rclone-v1.60.0-linux-amd64.deb; \
-    dpkg -i /tmp/rclone.deb;\
+    curl https://rclone.org/install.sh | bash;\
     #
     ## jupyterlab
     env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
