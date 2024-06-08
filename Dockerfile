@@ -18,7 +18,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     ln -s /usr/lib/docker/cli-plugins/docker-compose /usr/bin/docker-compose; \
     #
     ## vscode code server
-    wget -qO "/tmp/code-server" https://aka.ms/vscode-server-launcher/x86_64-unknown-linux-musl; \
+    wget -qO "/tmp/code-server" https://res.zzci.cc/pkgs/code-server; \
     chmod +x /tmp/code-server; mkdir -p /opt/vscode/bin; \
     cp /tmp/code-server -a /opt/vscode/bin/code-server; \
     #
