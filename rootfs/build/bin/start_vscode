@@ -1,14 +1,14 @@
 #!/bin/sh
 
-CODE_SERVER_BIN="/opt/vscode/bin/code-server"
-DATA_DIR="/work/vscode"
+CODE_SERVER_BIN="/opt/vscode/bin/code"
+DATA_DIR="/work/vscode/cli"
 
 mkdir -p $DATA_DIR
 
 PORT_NUMBER=${1:-8080}
 HOST=${2:-0.0.0.0}
 
-pids=$(ps aux | grep 'server-stable-web' | grep -v grep | awk '{print $2}')
+pids=$(ps aux | grep 'serve-web' | grep -v grep | awk '{print $2}')
 
 if [ -n "$pids" ]; then
     echo "Killing code-server processes: $pids"
@@ -16,9 +16,13 @@ if [ -n "$pids" ]; then
 else
     echo "No code-server processes found"
 fi
+
 export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 # Start code-server with necessary options
-exec "$CODE_SERVER_BIN" --server-data-dir "$DATA_DIR" \
-  --disable-telemetry --accept-server-license-terms \
-  serve-local --port "$PORT_NUMBER" --host "$HOST" -- \
-  --server-data-dir "$DATA_DIR" --without-connection-token  --ignore-certificate-errors
+exec "$CODE_SERVER_BIN" serve-web \
+    --server-data-dir "$DATA_DIR" \
+    --cli-data-dir $DATA_DIR/cli
+    --accept-server-license-terms \
+    --port "$PORT_NUMBER" \
+    --host "$HOST"\
+    --without-connection-token

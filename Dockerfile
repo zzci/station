@@ -18,9 +18,9 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     ln -s /usr/lib/docker/cli-plugins/docker-compose /usr/bin/docker-compose; \
     #
     ## vscode code server
-    wget -qO "/tmp/code-server" https://res.zzci.cc/pkgs/code-server; \
-    chmod +x /tmp/code-server; mkdir -p /opt/vscode/bin; \
-    cp /tmp/code-server -a /opt/vscode/bin/code-server; \
+    wget -qO "/tmp/vscode.tar.gz" 'https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-x64'; \
+    mkdir -p /opt/vscode/bin; \
+    tar -zxvf /tmp/vscode.tar.gz -C /opt/vscode/bin;  \
     #
     ## rclone
     curl https://rclone.org/install.sh | bash;\
