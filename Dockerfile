@@ -41,4 +41,6 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
 
 EXPOSE 8080 8888 22
 
+VOLUME /work /root
+
 CMD ["/start.sh"]

@@ -1,9 +1,9 @@
 #!/bin/sh
 
 CODE_SERVER_BIN="/opt/vscode/bin/code"
-DATA_DIR="/work/vscode/cli"
+DATA_DIR="/work/vscode"
 
-mkdir -p $DATA_DIR
+mkdir -p $DATA_DIR/cli
 
 PORT_NUMBER=${1:-8080}
 HOST=${2:-0.0.0.0}
@@ -21,8 +21,9 @@ export NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 # Start code-server with necessary options
 exec "$CODE_SERVER_BIN" serve-web \
     --server-data-dir "$DATA_DIR" \
-    --cli-data-dir $DATA_DIR/cli
+    --cli-data-dir $DATA_DIR/cli \
     --accept-server-license-terms \
     --port "$PORT_NUMBER" \
-    --host "$HOST"\
+    --host "$HOST" \
+    --log error \
     --without-connection-token
