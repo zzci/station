@@ -9,13 +9,16 @@ COPY --from=docker /usr/local/libexec/docker/cli-plugins/docker-compose /usr/lib
 ADD rootfs /
 
 RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
-    php-cli dnsutils sqlite3 git-lfs make; \
+    php-cli dnsutils sqlite3 git-lfs make openssh-server zsh; \
     # on my zsh
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
     echo "DISABLE_AUTO_UPDATE=true" >> /root/.zshrc; \
     #
     ## docker compose
     ln -s /usr/lib/docker/cli-plugins/docker-compose /usr/bin/docker-compose; \
+    #
+    ## croc
+    curl https://getcroc.schollz.com | bash; \
     #
     ## vscode code server
     wget -qO "/tmp/vscode.tar.gz" 'https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-x64'; \
