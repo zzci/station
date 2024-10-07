@@ -9,37 +9,40 @@ COPY --from=docker /usr/local/libexec/docker/cli-plugins/docker-compose /usr/lib
 ADD rootfs /
 
 RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
-    php-cli dnsutils sqlite3 git-lfs make openssh-server zsh; \
+    dnsutils sqlite3 git-lfs make openssh-server zsh && \
     # on my zsh
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; \
-    echo "DISABLE_AUTO_UPDATE=true" >> /root/.zshrc; \
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
+    echo "DISABLE_AUTO_UPDATE=true" >> /root/.zshrc && \
     #
     ## docker compose
-    ln -s /usr/lib/docker/cli-plugins/docker-compose /usr/bin/docker-compose; \
+    ln -s /usr/lib/docker/cli-plugins/docker-compose /usr/bin/docker-compose && \
     #
     ## croc
-    curl https://getcroc.schollz.com | bash; \
+    curl https://getcroc.schollz.com | bash && \
     #
     ## vscode code server
-    wget -qO "/tmp/vscode.tar.gz" 'https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-x64'; \
-    mkdir -p /opt/vscode/bin; \
-    tar -zxvf /tmp/vscode.tar.gz -C /opt/vscode/bin;  \
+    wget -qO "/tmp/vscode.tar.gz" 'https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-x64' && \
+    mkdir -p /opt/vscode/bin && \
+    tar -zxvf /tmp/vscode.tar.gz -C /opt/vscode/bin && \
     #
     ## rclone
-    curl https://rclone.org/install.sh | bash;\
+    wget -qO "/tmp/rclone.zip" https://downloads.rclone.org/rclone-current-linux-amd64.zip && \
+    unzip -j -d /tmp/rclone /tmp/rclone.zip && \
+    mv /tmp/rclone/rclone /usr/bin/ && \
+    chmod +x /usr/bin/rclone && \
     #
     ## jupyterlab
     env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
-    python3-pip python3-setuptools; \
+    python3-pip python3-setuptools && \
     ## jupyterlab install
-    pip3 install wheel numpy jupyterlab; \
+    pip3 install wheel numpy jupyterlab && \
     ## clear
-    apt-get autoclean -y; apt-get autoremove -y; rm -rf /var/lib/apt/lists/*; rm -rf /tmp/*; rm -rf /root/.cache; \
+    apt-get autoclean -y && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/* && rm -rf /root/.cache && \
     ## pack /root
-    mkdir -p /build/res/; \
-    bash /tmp.sh; \
-    touch /root/.init_tag_do_not_delete; \
-    rm -rf /build/res/root.tar.gz; \
+    mkdir -p /build/res/ && \
+    bash /tmp.sh && \
+    touch /root/.init_tag_do_not_delete && \
+    rm -rf /build/res/root.tar.gz && \
     tar -czf /build/res/root.tar.gz /root
 
 EXPOSE 8080 8888 22
