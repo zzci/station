@@ -9,7 +9,7 @@ COPY --from=docker /usr/local/libexec/docker/cli-plugins/docker-compose /usr/lib
 ADD rootfs /
 
 RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
-    dnsutils sqlite3 git-lfs make openssh-server zsh && \
+    dnsutils sqlite3 git git-lfs make openssh-server zsh && \
     # on my zsh
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
     echo "DISABLE_AUTO_UPDATE=true" >> /root/.zshrc && \
