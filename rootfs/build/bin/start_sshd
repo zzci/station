@@ -1,75 +1,33 @@
 #!/bin/sh
-# =============================================================================
-# SSH 服务启动脚本
-# 功能: 初始化 SSH 密钥、配置并启动 SSH 守护进程
-# =============================================================================
 set -e
 
-# 配置路径
 SSHD_CONFIG_DIR="/work/config/sshd"
-LOG_PREFIX="[SSHD]"
 
-# 日志函数
-log_info() {
-    echo "$LOG_PREFIX INFO: $1"
-}
-
-log_error() {
-    echo "$LOG_PREFIX ERROR: $1" >&2
-}
+log() { echo "[SSHD] $1"; }
 
 # 初始化 SSH 密钥
 init_ssh_keys() {
-    log_info "Initializing SSH host keys..."
-
+    log "Initializing SSH host keys..."
     for key_type in dsa rsa ecdsa ed25519; do
         key_file="$SSHD_CONFIG_DIR/ssh_host_${key_type}_key"
-        if [ ! -f "$key_file" ]; then
-            log_info "Generating $key_type key..."
-            ssh-keygen -q -N "" -t "$key_type" -f "$key_file"
-        fi
-
-        # 创建符号链接
+        [ ! -f "$key_file" ] && ssh-keygen -q -N "" -t "$key_type" -f "$key_file"
         rm -f "/etc/ssh/ssh_host_${key_type}_key" "/etc/ssh/ssh_host_${key_type}_key.pub"
         ln -sf "$key_file" "/etc/ssh/ssh_host_${key_type}_key"
         ln -sf "${key_file}.pub" "/etc/ssh/ssh_host_${key_type}_key.pub"
     done
 }
 
-# 初始化 SSH 配置
-init_sshd_config() {
-    log_info "Setting up SSH configuration..."
-
-    # 创建必要目录
+# 初始化配置
+init_config() {
     mkdir -p /run/sshd "$SSHD_CONFIG_DIR"
-
-    # 复制默认配置（如果不存在）
-    if [ ! -f "$SSHD_CONFIG_DIR/sshd_config" ]; then
-        log_info "Creating default sshd_config..."
-        cp -a /build/config/sshd/sshd_config "$SSHD_CONFIG_DIR/"
-    fi
-
-    # 链接配置文件
+    [ ! -f "$SSHD_CONFIG_DIR/sshd_config" ] && cp -a /build/config/sshd/sshd_config "$SSHD_CONFIG_DIR/"
     rm -f /etc/ssh/sshd_config
     ln -sf "$SSHD_CONFIG_DIR/sshd_config" /etc/ssh/sshd_config
-
-    # 设置随机 root 密码（安全措施，推荐使用密钥认证）
-    ROOT_PASS=$(cat /dev/urandom | base64 | head -c 16)
-    echo "root:$ROOT_PASS" | chpasswd
-    log_info "Root password has been randomized (use SSH key authentication)"
+    # 随机 root 密码
+    echo "root:$(cat /dev/urandom | base64 | head -c 16)" | chpasswd
 }
 
-# 主函数
-main() {
-    log_info "Starting SSH service initialization..."
-
-    init_sshd_config
-    init_ssh_keys
-
-    log_info "SSH initialization complete. Starting sshd daemon..."
-
-    # 启动 SSH 守护进程（前台运行）
-    exec /usr/sbin/sshd -D -E /var/log/sshd.log
-}
-
-main "$@"
+init_config
+init_ssh_keys
+log "Starting sshd..."
+exec /usr/sbin/sshd -D -E /var/log/sshd.log

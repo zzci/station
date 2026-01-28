@@ -1,48 +1,19 @@
 #!/bin/sh
-# =============================================================================
-# Jupyter Lab 启动脚本
-# 功能: 初始化 Jupyter 配置并启动服务
-# =============================================================================
 set -e
 
-# 配置
-SERVICE_NAME="jupyter"
-CONFIG_DIR="/work/config/$SERVICE_NAME"
-LOG_PREFIX="[JUPYTER]"
+CONFIG_DIR="/work/config/jupyter"
 
-# 日志函数
-log_info() {
-    echo "$LOG_PREFIX INFO: $1"
-}
+log() { echo "[JUPYTER] $1"; }
 
-log_error() {
-    echo "$LOG_PREFIX ERROR: $1" >&2
-}
-
-# 初始化配置
 init_config() {
-    log_info "Checking Jupyter configuration..."
-
     if [ ! -d "$CONFIG_DIR" ] || [ ! -f "$CONFIG_DIR/jnl.py" ]; then
-        log_info "Creating default Jupyter configuration..."
+        log "Creating default config..."
         mkdir -p "$CONFIG_DIR"
-        cp -a "/build/config/$SERVICE_NAME/jnl.py" "$CONFIG_DIR/"
+        cp -a /build/config/jupyter/jnl.py "$CONFIG_DIR/"
     fi
-
-    # 创建用户设置和工作区目录
     mkdir -p "$CONFIG_DIR/lab/user-settings" "$CONFIG_DIR/lab/workspaces"
-
-    log_info "Configuration ready at: $CONFIG_DIR"
 }
 
-# 主函数
-main() {
-    log_info "Starting Jupyter Lab initialization..."
-
-    init_config
-
-    log_info "Launching Jupyter Lab..."
-    exec /usr/local/bin/jupyter-lab --config "$CONFIG_DIR/jnl.py"
-}
-
-main "$@"
+init_config
+log "Starting Jupyter Lab..."
+exec /usr/local/bin/jupyter-lab --config "$CONFIG_DIR/jnl.py"
