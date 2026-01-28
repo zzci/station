@@ -1,12 +1,19 @@
 #!/bin/sh
-name="jupyter"
-config="/work/config/$name"
+set -e
 
-if [ ! -d "$config" ] || [ ! -f "$config/jnl.py" ]; then
-    echo "init $name configure"
-    mkdir -p $config
-    cp -a /build/config/$name/jnl.py $config
-fi
+CONFIG_DIR="/work/config/jupyter"
 
-mkdir -p $config/lab/user-settings $config/lab/workspaces
-exec /usr/local/bin/jupyter-lab --config $config/jnl.py
+log() { echo "[JUPYTER] $1"; }
+
+init_config() {
+    if [ ! -d "$CONFIG_DIR" ] || [ ! -f "$CONFIG_DIR/jnl.py" ]; then
+        log "Creating default config..."
+        mkdir -p "$CONFIG_DIR"
+        cp -a /build/config/jupyter/jnl.py "$CONFIG_DIR/"
+    fi
+    mkdir -p "$CONFIG_DIR/lab/user-settings" "$CONFIG_DIR/lab/workspaces"
+}
+
+init_config
+log "Starting Jupyter Lab..."
+exec /usr/local/bin/jupyter-lab --config "$CONFIG_DIR/jnl.py"

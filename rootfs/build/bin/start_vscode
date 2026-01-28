@@ -1,21 +1,25 @@
 #!/bin/sh
+set -e
 
-CODE_SERVER_BIN="/usr/lib/code-server/bin/code-server"
 DATA_DIR="/work/vscode"
-mkdir -p $DATA_DIR/data $DATA_DIR/ext
+BIND_ADDR="${1:-0.0.0.0:8080}"
 
-pids=$(ps aux | grep 'code-server' | grep -v grep | awk '{print $2}')
+log() { echo "[VSCODE] $1"; }
 
-if [ -n "$pids" ]; then
-    echo "Killing code-server processes: $pids"
-    echo $pids | xargs kill -9
-else
-    echo "No code-server processes found"
-fi
+# 停止已存在的进程
+stop_existing() {
+    pids=$(ps aux | grep 'code-server' | grep -v grep | awk '{print $2}' || true)
+    [ -n "$pids" ] && echo "$pids" | xargs kill -9 2>/dev/null || true
+}
 
-# Start code-server with necessary options
-exec "$CODE_SERVER_BIN" --auth none --disable-telemetry --disable-update-check \
-    --bind-addr 0.0.0.0:8080 \
-    --config $DATA_DIR/config.yml \
-    --user-data-dir $DATA_DIR/data \
-    --extensions-dir $DATA_DIR/ext
+stop_existing
+mkdir -p "$DATA_DIR/data" "$DATA_DIR/ext"
+log "Starting code-server on $BIND_ADDR..."
+exec /usr/lib/code-server/bin/code-server \
+    --auth none \
+    --disable-telemetry \
+    --disable-update-check \
+    --bind-addr "$BIND_ADDR" \
+    --config "$DATA_DIR/config.yml" \
+    --user-data-dir "$DATA_DIR/data" \
+    --extensions-dir "$DATA_DIR/ext"
