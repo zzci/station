@@ -7,11 +7,6 @@ FROM zzci/ubase
 # 构建参数 - 可在构建时自定义版本
 ARG CODE_SERVER_VERSION=4.108.2
 
-# 环境变量
-ENV LANG=C.UTF-8 \
-    LC_ALL=C.UTF-8 \
-    DEBIAN_FRONTEND=noninteractive
-
 WORKDIR /app
 
 # =============================================================================
@@ -93,12 +88,6 @@ EXPOSE 8080 8888 22
 
 # 数据持久化卷
 VOLUME /work /root
-
-# 健康检查 - 每 30 秒检查一次，超时 10 秒，失败 3 次视为不健康
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8080/healthz 2>/dev/null || \
-        curl -f http://localhost:8888/api 2>/dev/null || \
-        exit 1
 
 # 启动命令
 CMD ["/start.sh"]
