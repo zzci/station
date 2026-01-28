@@ -1,52 +1,75 @@
 #!/bin/sh
+# =============================================================================
+# SSH 服务启动脚本
+# 功能: 初始化 SSH 密钥、配置并启动 SSH 守护进程
+# =============================================================================
+set -e
 
-sshd_config="/work/config/sshd"
+# 配置路径
+SSHD_CONFIG_DIR="/work/config/sshd"
+LOG_PREFIX="[SSHD]"
 
-init_sshd() {
-    echo "init ssh configure"
-    mkdir -p /run/sshd
-    mkdir -p $sshd_config
-    if [ ! -f $sshd_config/ssh_host_dsa_key ]; then
-        echo "init ssh host dsa key"
-        ssh-keygen -q -N "" -t dsa -f $sshd_config/ssh_host_dsa_key
-    fi
-
-    if [ ! -f $sshd_config/ssh_host_rsa_key ]; then
-        echo "init ssh host rsa key"
-        ssh-keygen -q -N "" -t rsa -f $sshd_config/ssh_host_rsa_key
-    fi
-
-    if [ ! -f $sshd_config/ssh_host_ecdsa_key ]; then
-        echo "init ssh host ecdsa key"
-        ssh-keygen -q -N "" -t ecdsa -f $sshd_config/ssh_host_ecdsa_key
-    fi
-
-    if [ ! -f $sshd_config/ssh_host_ed25519_key ]; then
-        echo "init ssh host ed25519 key"
-        ssh-keygen -q -N "" -t ed25519 -f $sshd_config/ssh_host_ed25519_key
-    fi
-
-    rm -rf /etc/ssh/ssh_host_*
-    ln -s $sshd_config/ssh_host_dsa_key.pub /etc/ssh/ssh_host_dsa_key.pub
-    ln -s $sshd_config/ssh_host_rsa_key.pub /etc/ssh/ssh_host_rsa_key.pub
-    ln -s $sshd_config/ssh_host_ecdsa_key.pub /etc/ssh/ssh_host_ecdsa_key.pub
-    ln -s $sshd_config/ssh_host_ed25519_key.pub /etc/ssh/ssh_host_ed25519_key.pub
-    ln -s $sshd_config/ssh_host_dsa_key /etc/ssh/ssh_host_dsa_key
-    ln -s $sshd_config/ssh_host_rsa_key /etc/ssh/ssh_host_rsa_key
-    ln -s $sshd_config/ssh_host_ecdsa_key /etc/ssh/ssh_host_ecdsa_key
-    ln -s $sshd_config/ssh_host_ed25519_key /etc/ssh/ssh_host_ed25519_key
-
-    echo root:$(echo `cat /dev/urandom | base64 | head -c 16`) | chpasswd
-
-    if [ ! -f $sshd_config/sshd_config ]; then
-        cp -a /build/config/sshd/sshd_config $sshd_config
-    fi
-
-    rm /etc/ssh/sshd_config
-    ln -s $sshd_config/sshd_config /etc/ssh/sshd_config
+# 日志函数
+log_info() {
+    echo "$LOG_PREFIX INFO: $1"
 }
 
-init_sshd
+log_error() {
+    echo "$LOG_PREFIX ERROR: $1" >&2
+}
 
-exec /usr/sbin/sshd -D -E /var/log/sshd.log
+# 初始化 SSH 密钥
+init_ssh_keys() {
+    log_info "Initializing SSH host keys..."
 
+    for key_type in dsa rsa ecdsa ed25519; do
+        key_file="$SSHD_CONFIG_DIR/ssh_host_${key_type}_key"
+        if [ ! -f "$key_file" ]; then
+            log_info "Generating $key_type key..."
+            ssh-keygen -q -N "" -t "$key_type" -f "$key_file"
+        fi
+
+        # 创建符号链接
+        rm -f "/etc/ssh/ssh_host_${key_type}_key" "/etc/ssh/ssh_host_${key_type}_key.pub"
+        ln -sf "$key_file" "/etc/ssh/ssh_host_${key_type}_key"
+        ln -sf "${key_file}.pub" "/etc/ssh/ssh_host_${key_type}_key.pub"
+    done
+}
+
+# 初始化 SSH 配置
+init_sshd_config() {
+    log_info "Setting up SSH configuration..."
+
+    # 创建必要目录
+    mkdir -p /run/sshd "$SSHD_CONFIG_DIR"
+
+    # 复制默认配置（如果不存在）
+    if [ ! -f "$SSHD_CONFIG_DIR/sshd_config" ]; then
+        log_info "Creating default sshd_config..."
+        cp -a /build/config/sshd/sshd_config "$SSHD_CONFIG_DIR/"
+    fi
+
+    # 链接配置文件
+    rm -f /etc/ssh/sshd_config
+    ln -sf "$SSHD_CONFIG_DIR/sshd_config" /etc/ssh/sshd_config
+
+    # 设置随机 root 密码（安全措施，推荐使用密钥认证）
+    ROOT_PASS=$(cat /dev/urandom | base64 | head -c 16)
+    echo "root:$ROOT_PASS" | chpasswd
+    log_info "Root password has been randomized (use SSH key authentication)"
+}
+
+# 主函数
+main() {
+    log_info "Starting SSH service initialization..."
+
+    init_sshd_config
+    init_ssh_keys
+
+    log_info "SSH initialization complete. Starting sshd daemon..."
+
+    # 启动 SSH 守护进程（前台运行）
+    exec /usr/sbin/sshd -D -E /var/log/sshd.log
+}
+
+main "$@"

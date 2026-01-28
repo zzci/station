@@ -1,10 +1,33 @@
 #!/bin/sh
+# =============================================================================
+# Root 目录初始化脚本
+# 功能: 首次启动时解压预打包的 root 目录配置
+# =============================================================================
+set -e
 
-if [ ! -f "/root/.init_tag_do_not_delete" ]; then
-    echo "Init default root file"
-    mkdir -p /root
-    tar -zxvf /build/res/root.tar.gz -C /
-    rm -rf /root/.ssh
-    mkdir -p /work/config/ssh
-    ln -s /work/config/ssh /root/.ssh
-fi
+INIT_TAG="/root/.init_tag_do_not_delete"
+LOG_PREFIX="[INIT]"
+
+log_info() {
+    echo "$LOG_PREFIX INFO: $1"
+}
+
+main() {
+    if [ ! -f "$INIT_TAG" ]; then
+        log_info "First run detected, initializing root directory..."
+
+        mkdir -p /root
+        tar -zxvf /build/res/root.tar.gz -C /
+
+        # 配置 SSH 目录软链接
+        rm -rf /root/.ssh
+        mkdir -p /work/config/ssh
+        ln -s /work/config/ssh /root/.ssh
+
+        log_info "Root directory initialized successfully"
+    else
+        log_info "Root directory already initialized, skipping..."
+    fi
+}
+
+main "$@"

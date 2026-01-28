@@ -1,21 +1,68 @@
 #!/bin/sh
+# =============================================================================
+# VS Code Server 启动脚本
+# 功能: 初始化并启动 code-server
+# =============================================================================
+set -e
 
+# 配置
 CODE_SERVER_BIN="/usr/lib/code-server/bin/code-server"
 DATA_DIR="/work/vscode"
-mkdir -p $DATA_DIR/data $DATA_DIR/ext
+LOG_PREFIX="[VSCODE]"
 
-pids=$(ps aux | grep 'code-server' | grep -v grep | awk '{print $2}')
+# 日志函数
+log_info() {
+    echo "$LOG_PREFIX INFO: $1"
+}
 
-if [ -n "$pids" ]; then
-    echo "Killing code-server processes: $pids"
-    echo $pids | xargs kill -9
-else
-    echo "No code-server processes found"
-fi
+log_error() {
+    echo "$LOG_PREFIX ERROR: $1" >&2
+}
 
-# Start code-server with necessary options
-exec "$CODE_SERVER_BIN" --auth none --disable-telemetry --disable-update-check \
-    --bind-addr 0.0.0.0:8080 \
-    --config $DATA_DIR/config.yml \
-    --user-data-dir $DATA_DIR/data \
-    --extensions-dir $DATA_DIR/ext
+# 停止已存在的进程
+stop_existing() {
+    pids=$(ps aux | grep 'code-server' | grep -v grep | awk '{print $2}' || true)
+
+    if [ -n "$pids" ]; then
+        log_info "Stopping existing code-server processes: $pids"
+        echo "$pids" | xargs kill -15 2>/dev/null || true
+        sleep 2
+        # 强制终止仍在运行的进程
+        pids=$(ps aux | grep 'code-server' | grep -v grep | awk '{print $2}' || true)
+        if [ -n "$pids" ]; then
+            log_info "Force killing remaining processes..."
+            echo "$pids" | xargs kill -9 2>/dev/null || true
+        fi
+    fi
+}
+
+# 初始化目录
+init_directories() {
+    log_info "Initializing VS Code Server directories..."
+    mkdir -p "$DATA_DIR/data" "$DATA_DIR/ext"
+}
+
+# 主函数
+main() {
+    log_info "Starting VS Code Server initialization..."
+
+    stop_existing
+    init_directories
+
+    log_info "Launching code-server on port 8080..."
+
+    # 启动 code-server
+    # --auth none: 无认证（建议在反向代理层添加认证）
+    # --disable-telemetry: 禁用遥测
+    # --disable-update-check: 禁用更新检查
+    exec "$CODE_SERVER_BIN" \
+        --auth none \
+        --disable-telemetry \
+        --disable-update-check \
+        --bind-addr 0.0.0.0:8080 \
+        --config "$DATA_DIR/config.yml" \
+        --user-data-dir "$DATA_DIR/data" \
+        --extensions-dir "$DATA_DIR/ext"
+}
+
+main "$@"

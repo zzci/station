@@ -1,21 +1,65 @@
+# =============================================================================
+# Docker Station - 开发环境容器编排配置
+# =============================================================================
+# 使用方法:
+#   1. 复制 .env.example 为 .env 并配置
+#   2. docker-compose up -d
+#   3. 访问服务:
+#      - VS Code Server: http://localhost:${VSCODE_PORT:-8080}
+#      - Jupyter Lab:    http://localhost:${JUPYTER_PORT:-8888}
+#      - SSH:            ssh -p ${SSH_PORT:-2222} root@localhost
+# =============================================================================
+
 services:
-  traefik:
-    image: station-test
-    container_name: station-test
-    hostname: 'station'
+  station:
+    image: ${STATION_IMAGE:-zzci/station}
+    container_name: ${CONTAINER_NAME:-station}
+    hostname: ${HOSTNAME:-station}
+    restart: unless-stopped
+
+    # 端口映射 (可通过环境变量自定义)
     ports:
-      - "2222:22"
-      - "8080:8080"
-      - "8888:8888"
+      - "${SSH_PORT:-2222}:22"        # SSH Server
+      - "${VSCODE_PORT:-8080}:8080"   # VS Code Server
+      - "${JUPYTER_PORT:-8888}:8888"  # Jupyter Lab
+
+    # 数据卷挂载
     volumes:
+      # Docker socket (用于容器内管理 Docker)
       - /var/run/docker.sock:/var/run/docker.sock
-      - /app/station/work:/work
-      - /app:/app
+      # 工作目录持久化
+      - ${WORK_DIR:-./work}:/work
+      # 项目目录挂载 (可选)
+      - ${APP_DIR:-/app}:/app
+
+    # 环境变量
+    environment:
+      - TZ=${TZ:-Asia/Shanghai}
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-}
+      - VSCODE_PASSWORD=${VSCODE_PASSWORD:-}
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # 网络配置
     networks:
-      - proxy
+      - ${NETWORK_NAME:-station-net}
 
+# =============================================================================
+# 网络配置
+# =============================================================================
 networks:
-  proxy:
-    external:
-      name: proxy
+  station-net:
+    name: ${NETWORK_NAME:-station-net}
+    driver: bridge
 
+# 如需使用外部 Traefik 网络，可取消下面的注释并注释上面的配置
+# networks:
+#   proxy:
+#     external: true
+#     name: proxy
