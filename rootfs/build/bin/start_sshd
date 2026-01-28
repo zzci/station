@@ -1,9 +1,8 @@
 #!/bin/sh
 
 sshd_config="/work/config/sshd"
-ssh_config="/work/config/ssh"
 
-init_ssh() {
+init_sshd() {
     echo "init ssh configure"
     mkdir -p /run/sshd
     mkdir -p $sshd_config
@@ -47,14 +46,7 @@ init_ssh() {
     ln -s $sshd_config/sshd_config /etc/ssh/sshd_config
 }
 
-init_ssh
-
-if [ ! -d "/root/.ssh" ] || [ "`ls -A /root/.ssh`" = "" ]; then
-    rm -rf /root/.ssh
-    echo "init ssh auth configure"
-    mkdir -p $ssh_config
-    ln -s $ssh_config /root/.ssh
-fi
+init_sshd
 
 exec /usr/sbin/sshd -D -E /var/log/sshd.log
 
