@@ -9,7 +9,7 @@ COPY --from=docker /usr/local/libexec/docker/cli-plugins/docker-compose /usr/lib
 ADD rootfs /
 
 RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
-    dnsutils sqlite3 git git-lfs make openssh-server zsh && \
+    dnsutils sqlite3 git git-lfs make openssh-server zsh libnss3 libnspr4 brotli && \
     # on my zsh
     sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" && \
     echo "DISABLE_AUTO_UPDATE=true" >> /root/.zshrc && \
@@ -21,8 +21,8 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     curl https://getcroc.schollz.com | bash && \
     #
     ## vscode code server
-    CODE_VERSION=4.108.2; \ 
-    wget -qO "/tmp/coder.deb" https://github.com/coder/code-server/releases/download/v$CODE_VERSION/code-server_$CODE_VERSION_amd64.deb && \
+    CODE_VERSION=4.108.2; \
+    wget -qO "/tmp/coder.deb" https://github.com/coder/code-server/releases/download/v${CODE_VERSION}/code-server_${CODE_VERSION}_amd64.deb && \
     dpkg -i /tmp/coder.deb && \
     #
     ## rclone

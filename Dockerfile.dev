@@ -15,7 +15,7 @@ RUN \
     add-apt-repository ppa:longsleep/golang-backports; \
     #
     ## nodejs
-    apt-get install -y make pkg-config nodejs gcc  golang-go g++ libnss3 libnspr4 brotli; \
+    apt-get install -y make pkg-config nodejs gcc golang-go g++; \
     #
     ## config node
     corepack enable; \
