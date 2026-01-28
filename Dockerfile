@@ -21,9 +21,9 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     curl https://getcroc.schollz.com | bash && \
     #
     ## vscode code server
-    wget -qO "/tmp/vscode.tar.gz" 'https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-x64' && \
-    mkdir -p /opt/vscode/bin && \
-    tar -zxvf /tmp/vscode.tar.gz -C /opt/vscode/bin && \
+    CODE_VERSION=4.108.2; \ 
+    wget -qO "/tmp/coder.deb" https://github.com/coder/code-server/releases/download/v$CODE_VERSION/code-server_$CODE_VERSION_amd64.deb && \
+    dpkg -i /tmp/coder.deb && \
     #
     ## rclone
     wget -qO "/tmp/rclone.zip" https://downloads.rclone.org/rclone-current-linux-amd64.zip && \
