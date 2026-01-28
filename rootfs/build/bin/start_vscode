@@ -2,6 +2,7 @@
 set -e
 
 DATA_DIR="/work/vscode"
+BIND_ADDR="${1:-0.0.0.0:8080}"
 
 log() { echo "[VSCODE] $1"; }
 
@@ -13,12 +14,12 @@ stop_existing() {
 
 stop_existing
 mkdir -p "$DATA_DIR/data" "$DATA_DIR/ext"
-log "Starting code-server..."
+log "Starting code-server on $BIND_ADDR..."
 exec /usr/lib/code-server/bin/code-server \
     --auth none \
     --disable-telemetry \
     --disable-update-check \
-    --bind-addr 0.0.0.0:8080 \
+    --bind-addr "$BIND_ADDR" \
     --config "$DATA_DIR/config.yml" \
     --user-data-dir "$DATA_DIR/data" \
     --extensions-dir "$DATA_DIR/ext"
