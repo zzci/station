@@ -1,10 +1,16 @@
 #!/bin/sh
+set -e
 
-if [ ! -f "/root/.init_tag_do_not_delete" ]; then
-    echo "Init default root file"
+INIT_TAG="/root/.init_tag_do_not_delete"
+
+if [ ! -f "$INIT_TAG" ]; then
+    echo "[INIT] First run, initializing root directory..."
     mkdir -p /root
     tar -zxvf /build/res/root.tar.gz -C /
     rm -rf /root/.ssh
     mkdir -p /work/config/ssh
     ln -s /work/config/ssh /root/.ssh
+    echo "[INIT] Done"
+else
+    echo "[INIT] Already initialized, skipping..."
 fi

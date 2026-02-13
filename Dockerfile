@@ -1,5 +1,7 @@
 FROM zzci/ubase
 
+ARG CODE_SERVER_VERSION=4.108.2
+
 WORKDIR /app
 
 COPY --from=docker /usr/local/bin/docker /usr/bin/docker
@@ -21,8 +23,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     curl https://getcroc.schollz.com | bash && \
     #
     ## vscode code server
-    CODE_VERSION=4.108.2; \
-    wget -qO "/tmp/coder.deb" https://github.com/coder/code-server/releases/download/v${CODE_VERSION}/code-server_${CODE_VERSION}_amd64.deb && \
+    wget -qO "/tmp/coder.deb" "https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_amd64.deb" && \
     dpkg -i /tmp/coder.deb && \
     #
     ## rclone
@@ -32,7 +33,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
     python3-pip python3-setuptools && \
     ## jupyterlab install
-    pip3 install wheel numpy jupyterlab && \
+    pip3 install --no-cache-dir wheel numpy jupyterlab && \
     ## clear
     apt-get autoclean -y && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* && rm -rf /tmp/* && rm -rf /root/.cache && \
     ## pack /root
