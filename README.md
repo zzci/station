@@ -53,6 +53,22 @@ cat ~/.ssh/id_ed25519.pub >> ./work/config/ssh/authorized_keys
 ssh -p 2222 root@localhost
 ```
 
+#### Enable Services
+
+The `work` directory is mounted into the container. Create `work/.init/init.sh` to choose which services to start:
+
+```bash
+mkdir -p ./work/.init
+cat > ./work/.init/init.sh << 'EOF'
+#!/bin/sh
+sctl enable vscode
+sctl enable jupyter
+sctl enable sshd
+EOF
+```
+
+Remove or comment out any line to disable that service.
+
 #### Build Args
 
 | Arg | Default | Description |
