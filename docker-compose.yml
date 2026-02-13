@@ -1,5 +1,5 @@
 services:
-  traefik:
+  app:
     image: station-test
     container_name: station-test
     hostname: 'station'
