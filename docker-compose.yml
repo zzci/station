@@ -3,19 +3,15 @@ services:
     image: station-test
     container_name: station-test
     hostname: 'station'
-    ports:
-      - "2222:22"
-      - "8080:8080"
-      - "8888:8888"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /app/station/work:/work
       - /app:/app
     networks:
-      - proxy
+      - traefik
 
 networks:
   proxy:
     external:
-      name: proxy
+      name: traefik
 
