@@ -26,10 +26,7 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     dpkg -i /tmp/coder.deb && \
     #
     ## rclone
-    wget -qO "/tmp/rclone.zip" https://downloads.rclone.org/rclone-current-linux-amd64.zip && \
-    unzip -j -d /tmp/rclone /tmp/rclone.zip && \
-    mv /tmp/rclone/rclone /usr/bin/ && \
-    chmod +x /usr/bin/rclone && \
+    curl https://rclone.org/install.sh | bash && \
     #
     ## jupyterlab
     env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
