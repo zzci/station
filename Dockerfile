@@ -22,9 +22,8 @@ RUN apt-get -y update && env DEBIAN_FRONTEND="noninteractive" apt-get -y install
     ln -s /usr/lib/docker/cli-plugins/docker-compose /usr/bin/docker-compose && \
     ## croc
     curl https://getcroc.schollz.com | bash && \
-    ## code-server (multi-arch)
-    ARCH=$([ "$TARGETARCH" = "arm64" ] && echo "arm64" || echo "amd64") && \
-    wget -qO "/tmp/coder.deb" "https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_${ARCH}.deb" && \
+    ## code-server
+    curl -fsSL -o "/tmp/coder.deb" "https://github.com/coder/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server_${CODE_SERVER_VERSION}_amd64.deb" && \
     dpkg -i /tmp/coder.deb && \
     ## rclone
     curl https://rclone.org/install.sh | bash && \
