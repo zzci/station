@@ -1,63 +1,13 @@
 ### Station
 
-All-in-one development container based on [zzci/ubase](https://github.com/zzci/ubase).
-
-#### Services
-
-| Service | Port | Description |
-|---------|------|-------------|
-| VS Code Server | 8080 | Browser-based code editor |
-| Jupyter Lab | 8888 | Interactive computing |
-| SSH Server | 22 | Remote access (key-only) |
-
-#### Built-in Tools
-
-Docker CLI / Buildx / Compose, Git, Zsh (oh-my-zsh), rclone, croc, sqlite3
-
-#### Dev Image (`zzci/dev`)
-
-Extends station with Node.js 22, Go, GCC/G++ and corepack.
+All-in-one development container with VS Code Server (8080), Jupyter Lab (8888) and SSH (22).
 
 #### Quick Start
 
 ```bash
 git clone https://github.com/zzci/station.git && cd station
 
-# build & run
-./aa build
-./aa run
-
-# exec into container
-./aa exec zsh
-
-# stop
-./aa rm
-```
-
-#### Script (`aa`)
-
-| Command | Action |
-|---------|--------|
-| `./aa build` | Build image |
-| `./aa run` | Start services |
-| `./aa rm` | Stop and remove |
-| `./aa exec [cmd]` | Exec into container (default: sh) |
-
-#### SSH
-
-Key-only authentication. Add your public key:
-
-```bash
-mkdir -p ./work/config/ssh
-cat ~/.ssh/id_ed25519.pub >> ./work/config/ssh/authorized_keys
-ssh -p 2222 root@localhost
-```
-
-#### Enable Services
-
-The `work` directory is mounted into the container. Create `work/.init/init.sh` to choose which services to start:
-
-```bash
+# enable services before first run
 mkdir -p ./work/.init
 cat > ./work/.init/init.sh << 'EOF'
 #!/bin/sh
@@ -65,27 +15,20 @@ sctl enable vscode
 sctl enable jupyter
 sctl enable sshd
 EOF
+
+# build & run
+./aa build && ./aa run
+./aa exec zsh    # enter container
+./aa rm          # stop
 ```
 
-Remove or comment out any line to disable that service.
-
-#### Build Args
-
-| Arg | Default | Description |
-|-----|---------|-------------|
-| `CODE_SERVER_VERSION` | `4.108.2` | code-server version |
+#### SSH
 
 ```bash
-docker build --build-arg CODE_SERVER_VERSION=4.108.2 -t zzci/station .
+mkdir -p ./work/config/ssh
+cat ~/.ssh/id_ed25519.pub >> ./work/config/ssh/authorized_keys
 ```
 
-#### Volumes
+#### Dev Image (`zzci/dev`)
 
-| Path | Purpose |
-|------|---------|
-| `/work` | Persistent workspace, configs, vscode data |
-| `/root` | User home (auto-initialized on first run) |
-
-#### Traefik
-
-See `station.yml` for reverse proxy config with auth middleware.
+Extends station with Node.js 24, Go, GCC/G++. See `Dockerfile.dev`.

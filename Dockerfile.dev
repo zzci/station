@@ -6,7 +6,7 @@ ENV PATH=/usr/local/go/bin:/root/go/bin:$PATH
 
 RUN \
     ## nodejs
-    curl -fsSL https://deb.nodesource.com/setup_22.x | bash -; \
+    curl -fsSL https://deb.nodesource.com/setup_24.x | bash -; \
     #
     ## apt update.
     apt-get -y update; apt-get -y upgrade; \

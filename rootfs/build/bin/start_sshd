@@ -7,7 +7,7 @@ log() { echo "[SSHD] $1"; }
 
 init_ssh_keys() {
     log "Initializing SSH host keys..."
-    for key_type in dsa rsa ecdsa ed25519; do
+    for key_type in rsa ecdsa ed25519; do
         key_file="$SSHD_CONFIG_DIR/ssh_host_${key_type}_key"
         [ ! -f "$key_file" ] && ssh-keygen -q -N "" -t "$key_type" -f "$key_file"
         rm -f "/etc/ssh/ssh_host_${key_type}_key" "/etc/ssh/ssh_host_${key_type}_key.pub"
@@ -21,7 +21,7 @@ init_config() {
     [ ! -f "$SSHD_CONFIG_DIR/sshd_config" ] && cp -a /build/config/sshd/sshd_config "$SSHD_CONFIG_DIR/"
     rm -f /etc/ssh/sshd_config
     ln -sf "$SSHD_CONFIG_DIR/sshd_config" /etc/ssh/sshd_config
-    echo "root:$(cat /dev/urandom | base64 | head -c 16)" | chpasswd
+    echo "root:$(head -c 12 /dev/urandom | base64)" | chpasswd
 }
 
 init_config

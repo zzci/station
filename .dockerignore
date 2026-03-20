@@ -1,1 +1,9 @@
 work
+.git
+.github
+.gitignore
+.dockerignore
+README.md
+station.yml
+aa
+docker-compose.yml

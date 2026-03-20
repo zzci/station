@@ -11,7 +11,5 @@ services:
       - traefik
 
 networks:
-  proxy:
-    external:
-      name: traefik
-
+  traefik:
+    external: true

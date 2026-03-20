@@ -6,7 +6,7 @@ INIT_TAG="/root/.init_tag_do_not_delete"
 if [ ! -f "$INIT_TAG" ]; then
     echo "[INIT] First run, initializing root directory..."
     mkdir -p /root
-    tar -zxvf /build/res/root.tar.gz -C /
+    tar -zxf /build/res/root.tar.gz -C /
     rm -rf /root/.ssh
     mkdir -p /work/config/ssh
     ln -s /work/config/ssh /root/.ssh
