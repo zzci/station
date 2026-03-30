@@ -1,5 +1,8 @@
 FROM zzci/station
 
+ARG GO_VERSION=1.24.2
+ARG TARGETARCH
+
 WORKDIR /app
 
 ENV PATH=/usr/local/go/bin:/root/go/bin:$PATH
@@ -11,11 +14,11 @@ RUN \
     ## apt update.
     apt-get -y update; apt-get -y upgrade; \
     #
-    ## golang
-    add-apt-repository ppa:longsleep/golang-backports; \
+    ## golang (official tarball)
+    curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-${TARGETARCH}.tar.gz" | tar -C /usr/local -xz; \
     #
-    ## nodejs
-    apt-get install -y make pkg-config nodejs gcc golang-go g++; \
+    ## nodejs + build tools
+    apt-get install -y make pkg-config nodejs gcc g++; \
     #
     ## config node
     corepack enable; \
