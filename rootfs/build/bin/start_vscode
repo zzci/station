@@ -6,15 +6,20 @@ BIND_ADDR="${1:-0.0.0.0:8080}"
 
 log() { echo "[VSCODE] $1"; }
 
-stop_existing() {
-    pkill -9 code-server 2>/dev/null || true
-}
+if [ -n "${VSCODE_TOKEN:-}" ]; then
+    export PASSWORD="$VSCODE_TOKEN"
+fi
 
-stop_existing
+if [ -n "${PASSWORD:-}" ] || [ -n "${HASHED_PASSWORD:-}" ]; then
+    AUTH=password
+else
+    AUTH=none
+fi
+
 mkdir -p "$DATA_DIR/data" "$DATA_DIR/ext"
-log "Starting code-server on $BIND_ADDR..."
+log "Starting code-server on $BIND_ADDR (auth=$AUTH)..."
 exec /usr/lib/code-server/bin/code-server \
-    --auth none \
+    --auth "$AUTH" \
     --disable-telemetry \
     --disable-update-check \
     --bind-addr "$BIND_ADDR" \

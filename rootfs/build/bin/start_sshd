@@ -21,10 +21,9 @@ init_config() {
     [ ! -f "$SSHD_CONFIG_DIR/sshd_config" ] && cp -a /build/config/sshd/sshd_config "$SSHD_CONFIG_DIR/"
     rm -f /etc/ssh/sshd_config
     ln -sf "$SSHD_CONFIG_DIR/sshd_config" /etc/ssh/sshd_config
-    echo "root:$(head -c 12 /dev/urandom | base64)" | chpasswd
 }
 
 init_config
 init_ssh_keys
 log "Starting sshd..."
-exec /usr/sbin/sshd -D -E /var/log/sshd.log
+exec /usr/sbin/sshd -D -e

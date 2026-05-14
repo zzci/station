@@ -26,7 +26,7 @@ function dsr-fn {
     docker rm -f "$@"
 }
 function cw-fn {
-    cd /app/$1
+    cd /srv/$1
 }
 ## docker
 alias de=dex-fn
