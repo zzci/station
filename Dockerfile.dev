@@ -3,29 +3,25 @@ FROM zzci/station
 ARG GO_VERSION=1.24.2
 ARG TARGETARCH
 
-WORKDIR /app
-
 ENV PATH=/usr/local/go/bin:/root/go/bin:$PATH
 
-RUN \
-    ## nodejs
+RUN set -eux; \
+    ## restore /root from base image so additions stack on top
+    tar -zxf /build/res/root.tar.gz -C /; \
+    ## nodejs apt repo
     curl -fsSL https://deb.nodesource.com/setup_24.x | bash -; \
-    #
-    ## apt update.
+    ## apt update
     apt-get -y update; apt-get -y upgrade; \
-    #
     ## golang (official tarball)
-    curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-${TARGETARCH}.tar.gz" | tar -C /usr/local -xz; \
-    #
-    ## nodejs + build tools
-    apt-get install -y make pkg-config nodejs gcc g++; \
-    #
-    ## config node
+    curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-${TARGETARCH}.tar.gz" \
+        | tar -C /usr/local -xz; \
+    ## nodejs + native build toolchain
+    apt-get install -y --no-install-recommends make pkg-config nodejs gcc g++; \
+    ## node package managers
     corepack enable; \
-    #
     ## clear
-    apt-get autoclean -y; apt-get autoremove -y; rm -rf /var/lib/apt/lists/*; rm -rf /tmp/*; rm -rf /root/.cache; \
-    #
+    apt-get autoclean -y; apt-get autoremove -y; \
+    rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache; \
     ## pack /root
     mkdir -p /build/res/; \
     rm -rf /build/res/root.tar.gz; \

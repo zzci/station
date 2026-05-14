@@ -3,18 +3,12 @@
 # Get the current working directory
 PWD="$(cd -- "$(dirname "$0")" >/dev/null 2>&1 && pwd -P)"
 
-# Check if the script is run with at least one argument
-if [ "$#" -lt 1 ]; then
-  echo "Usage: $0 <action> <args>" >&2
-  exit 1
-fi
-
 # Copy env.example or .env.example to .env if .env does not exist
 if [ ! -f "$PWD/.env" ]; then
     if [ -f "$PWD/env.example" ]; then
-        cp "$PWD/env.example" "$PWD/.env"
+        cp "$PWD/env.example" "$PWD/.env" 2>/dev/null
     elif [ -f "$PWD/.env.example" ]; then
-        cp "$PWD/.env.example" "$PWD/.env"
+        cp "$PWD/.env.example" "$PWD/.env" 2>/dev/null
     fi
 fi
 
@@ -23,36 +17,91 @@ fi
 
 # Set the name and default exec command
 NAME=${POD_NAME:-$(basename "$PWD")}
-EXEC="sh"
+EXEC=${EXEC_COMMAND:-"sh"}
 
-# Check if Docker is running
-while ! docker info >/dev/null 2>&1; do
-    echo "Docker does not seem to be running, sleep 2.."
-    sleep 2
-done
+# Wait for docker daemon with bounded retries
+wait_for_docker() {
+    timeout=${DOCKER_WAIT_TIMEOUT:-30}
+    elapsed=0
+    while ! docker info >/dev/null 2>&1; do
+        if [ "$elapsed" -ge "$timeout" ]; then
+            echo "Error: docker daemon not reachable after ${timeout}s" >&2
+            exit 1
+        fi
+        echo "Docker does not seem to be running, sleep 2.."
+        sleep 2
+        elapsed=$((elapsed + 2))
+    done
+}
 
 # Action functions
+action_docker() {
+    wget a.zzci.cc/tpl/docker-compose.yml
+}
+
 action_build() {
-    docker build --rm -t "$NAME" .
+    wait_for_docker
+    docker compose build
+}
+
+action_pack() {
+    wait_for_docker
+    docker save "$NAME" | gzip > "$NAME.gz"
 }
 
 action_rm() {
+    wait_for_docker
     docker compose down
 }
 
+action_restart() {
+    wait_for_docker
+    docker compose restart
+}
+
+action_logs() {
+    wait_for_docker
+    docker compose logs -f "$@"
+}
+
+action_status() {
+    wait_for_docker
+    docker compose ps
+}
+
 action_exec() {
+    wait_for_docker
     [ -n "$1" ] && EXEC="$1"
-    docker exec -ti "$NAME" "$EXEC"
+    docker compose exec -ti app "$EXEC"
 }
 
 action_run() {
+    wait_for_docker
     docker compose down
     docker compose up -d
 }
 
-# Set the default action to "build" if none is provided
-action=$1
-shift
+action_help() {
+    echo "Usage: $0 <action> [args]"
+    echo ""
+    echo "Actions:"
+    echo "  docker   Download docker-compose.yml template"
+    echo "  build    Build docker image (compose build)"
+    echo "  pack     Export image to .gz archive"
+    echo "  run      Start services (down + up -d)"
+    echo "  rm       Stop and remove services"
+    echo "  restart  Restart services"
+    echo "  status   Show compose ps"
+    echo "  logs     Tail compose logs (args passed to compose logs)"
+    echo "  exec     Exec into app container (default: sh)"
+    echo "  help     Show this help message"
+}
+
+# Set the default action to "help" if none is provided
+action=${1:-help}
+if [ "$#" -gt 1 ]; then
+  shift
+fi
 
 # Function to check if a function exists
 function_exists() {
@@ -64,6 +113,7 @@ if function_exists "action_$action"; then
     "action_$action" "$@"
 else
     echo "Error: Unknown action: '$action'"
-    echo "Usage: $0 <action> <args>"
+    echo ""
+    action_help
     exit 1
 fi

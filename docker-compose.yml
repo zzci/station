@@ -1,12 +1,22 @@
 services:
   app:
-    image: station-test
+    build: .
+    image: zzci/station
     container_name: station-test
     hostname: 'station'
+    restart: unless-stopped
+    environment:
+      ZSRV_vscode: true
+      ZSRV_jupyter: true
+      ZSRV_sshd: true
+      # Optional auth — leave empty to disable (single-user dev default).
+      VSCODE_TOKEN: ${VSCODE_TOKEN:-}
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN:-}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /app/station/work:/work
-      - /app:/app
+      - ./work:/work
+      - ./root:/root
+      - /srv:/srv
     networks:
       - traefik
 

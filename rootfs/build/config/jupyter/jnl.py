@@ -1,7 +1,9 @@
+import os
+
 c.ExtensionApp.open_browser = False
 c.ServerApp.allow_remote_access = True
 c.ServerApp.allow_root = True
-c.ServerApp.token = ''
+c.ServerApp.token = os.environ.get('JUPYTER_TOKEN', '')
 c.ServerApp.ip = '0.0.0.0'
 c.ServerApp.port = 8888
 c.ServerApp.terminado_settings = {'shell_command': ['/bin/zsh']}

@@ -9,6 +9,8 @@ if [ ! -f "$INIT_TAG" ]; then
     tar -zxf /build/res/root.tar.gz -C /
     rm -rf /root/.ssh
     mkdir -p /work/config/ssh
+    chmod 700 /work/config/ssh
+    [ -f /work/config/ssh/authorized_keys ] && chmod 600 /work/config/ssh/authorized_keys
     ln -s /work/config/ssh /root/.ssh
     echo "[INIT] Done"
 else
