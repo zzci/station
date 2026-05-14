@@ -1,0 +1,5 @@
+failure-threshold: error
+ignored:
+  - DL3006  # base images intentionally track upstream (zzci/ubase, zzci/station)
+  - DL3007  # `latest` accepted for buildx-bin (multi-stage scratch import)
+  - DL3013  # pip packages (jupyterlab, numpy) intentionally not pinned

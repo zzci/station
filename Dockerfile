@@ -15,7 +15,7 @@ COPY --from=docker-cli /usr/local/bin/docker /usr/bin/docker
 COPY --from=buildx-bin /buildx /usr/lib/docker/cli-plugins/docker-buildx
 COPY --from=docker-cli /usr/local/libexec/docker/cli-plugins/docker-compose /usr/lib/docker/cli-plugins/docker-compose
 
-ADD rootfs /
+COPY rootfs /
 
 RUN set -eux; \
     apt-get -y update; \
