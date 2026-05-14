@@ -3,6 +3,7 @@
 echo > /etc/motd
 
 sed -i '1,/robbyrussell/{s/robbyrussell/afowler/}' ~/.zshrc
+# shellcheck disable=SC2016  # literal $ZSH is intended (sed regex)
 sed -i '/^source \$ZSH\/oh-my-zsh.sh/i zstyle ":omz:update" mode disabled' ~/.zshrc
 echo 'source ~/.alias' >> ~/.zshrc
 
