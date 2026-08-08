@@ -58,6 +58,16 @@ RUN set -eux; \
     tar -czf /build/res/root.tar.gz /root; \
     rm -rf /root; mkdir -p /root
 
+## build stamp — kept last so version args never bust the layers above
+ARG IMAGE_NAME=zzci/station
+ARG BUILD_VERSION=local
+ARG BUILD_TIME
+ARG VCS_REF=unknown
+
+RUN : "${BUILD_TIME:=$(date -u +%Y-%m-%dT%H:%M:%SZ)}"; \
+    printf 'IMAGE=%s\nVERSION=%s\nBUILD_TIME=%s\nVCS_REF=%s\n' \
+        "${IMAGE_NAME}" "${BUILD_VERSION}" "${BUILD_TIME}" "${VCS_REF}" > /.version
+
 EXPOSE 8080 8888 22
 
 VOLUME /work /root

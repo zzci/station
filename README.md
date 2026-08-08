@@ -74,6 +74,20 @@ This image is intended for **personal / single-user development**, not a public 
 - The container mounts `/var/run/docker.sock` from the host. **Anyone with shell access inside the container is effectively host root.** Treat it as such.
 - Multi-arch images (`linux/amd64`, `linux/arm64`) are built via GitHub Actions; binaries (code-server, croc, rclone) are pinned to GitHub releases. See `Dockerfile` for versions.
 
+#### Build stamp (`/.version`)
+
+Both `zzci/station` and `zzci/dev` ship a `/.version` file recording what the image was built from:
+
+```
+$ docker run --rm zzci/station cat /.version
+IMAGE=zzci/station
+VERSION=20260807
+BUILD_TIME=2026-08-07T04:45:27Z
+VCS_REF=6c54640
+```
+
+`VERSION` matches the dated image tag pushed alongside `latest`. It is plain `KEY=value`, so it can be sourced: `. /.version && echo "$VERSION"`. Local builds (`aa build`) report `VERSION=local` and `VCS_REF=unknown`.
+
 #### `aa` helper
 
 ```
