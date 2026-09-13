@@ -46,7 +46,7 @@ RUN set -eux; \
     ## jupyterlab
     env DEBIAN_FRONTEND="noninteractive" apt-get -y install --no-install-recommends \
         python3-pip python3-setuptools; \
-    pip3 install --no-cache-dir wheel numpy jupyterlab; \
+    pip3 install --break-system-packages --no-cache-dir wheel numpy jupyterlab; \
     ## cleanup
     apt-get autoclean -y; apt-get autoremove -y; \
     rm -rf /var/lib/apt/lists/* /tmp/* /root/.cache; \
