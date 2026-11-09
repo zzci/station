@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-26.04
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Hadolint Dockerfile
-        uses: hadolint/hadolint-action@v3.3.0
+        uses: hadolint/hadolint-action@v3.5.0
         with:
           dockerfile: ${{ inputs.dockerfile }}
           failure-threshold: error
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-26.04
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Get latest code-server version
         id: coder
